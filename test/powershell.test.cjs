@@ -27,7 +27,14 @@ for (const shell of ["powershell.exe", "pwsh.exe"]) {
     const detected = run(shell, ["-File", wrapper, "-TyporaPath", resources, "-DryRun", "-NoElevation"]);
     assert.equal(detected.status, 0, detected.stderr);
     const relative = run(shell, ["-File", wrapper, "-NodePath", process.execPath, "-TyporaPath", path.basename(resources), "-DryRun"], { cwd: root });
-    assert.equal(relative.status, 0, relative.stderr); assert.ok(relative.stdout.includes(resources));
+    assert.equal(relative.status, 0, relative.stderr);
+    // Windows runners can expose TEMP through an 8.3 alias such as RUNNER~1,
+    // while PowerShell reports the long spelling. Compare directory identity.
+    const reportedPath = relative.stdout.split(/\r?\n/).find(line => {
+      try { return fs.statSync(line.trim()).isDirectory(); } catch (_) { return false; }
+    });
+    assert.ok(reportedPath, "Installer did not report its target directory: " + relative.stdout);
+    assert.equal(fs.realpathSync.native(reportedPath.trim()).toLowerCase(), fs.realpathSync.native(resources).toLowerCase());
     const install = run(shell, args); assert.equal(install.status, 0, install.stderr);
     assert.ok(fs.readFileSync(path.join(resources, "window.html"), "utf8").includes("typora-easy-edit:start"));
     const uninstall = run(shell, args.concat("-Uninstall")); assert.equal(uninstall.status, 0, uninstall.stderr);

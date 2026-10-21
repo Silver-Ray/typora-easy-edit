@@ -1,0 +1,36 @@
+/* Inline code edit boundaries: keep real Markdown delimiters and their carets visible. */
+@media screen {
+    #write [md-inline="code"].md-expand {
+        caret-color: var(--LOGO-color, #D97757);
+        outline: 1px solid var(--LOGO-color, #D97757) !important;
+        outline-offset: 1px;
+        border-radius: 0.4rem;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+    }
+
+    #write [md-inline="code"].md-expand > .md-meta.md-before,
+    #write [md-inline="code"].md-expand > .md-meta.md-after {
+        display: inline !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+        font-family: var(--font-mono, monospace);
+        font-size: 0.9rem !important;
+        line-height: inherit;
+        color: var(--LOGO-color, #D97757) !important;
+        caret-color: var(--LOGO-color, #D97757) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    #write [md-inline="code"].md-expand > code {
+        caret-color: var(--LOGO-color, #D97757) !important;
+    }
+}
+
+@media print {
+    #write [md-inline="code"] > .md-meta {
+        display: none !important;
+    }
+}

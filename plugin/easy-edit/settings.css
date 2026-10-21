@@ -1,0 +1,26 @@
+#easy-edit-panel { position: fixed; inset: 0; z-index: 100000; background: #10203866; display: flex; align-items: center; justify-content: center; font: 14px/1.6 system-ui, "Microsoft YaHei", sans-serif; color: var(--text-color, #253047); }
+#easy-edit-panel[hidden] { display: none !important; }
+#easy-edit-panel * { box-sizing: border-box; }
+#easy-edit-panel .ee-dialog { width: 690px; max-width: 94vw; max-height: 88vh; display: flex; flex-direction: column; background: var(--bg-color, #fff); border: 1px solid #7b899c55; border-radius: 14px; box-shadow: 0 16px 64px #0003; }
+#easy-edit-panel .ee-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 16px; border-bottom: 1px solid #7b899c33; }
+#easy-edit-panel #ee-title { font-size: 21px; font-weight: 650; }
+#easy-edit-panel .ee-subtitle, #easy-edit-panel .ee-note { opacity: .7; font-size: 12px; }
+#easy-edit-panel .ee-body { overflow-y: auto; padding: 10px 24px 20px; }
+#easy-edit-panel .ee-section { margin-top: 14px; padding-top: 8px; border-top: 1px solid #7b899c33; }
+#easy-edit-panel .ee-section-title { color: #5585c7; font-size: 13px; font-weight: 650; margin: 6px 0; }
+#easy-edit-panel .ee-row { display: flex; justify-content: space-between; align-items: center; min-height: 36px; margin: 0; padding: 4px 0; cursor: pointer; }
+#easy-edit-panel .ee-row span { margin-right: 16px; }
+#easy-edit-panel input[type=checkbox] { flex-shrink: 0; width: 17px; height: 17px; margin: 0 3px; accent-color: #3979ce; cursor: pointer; }
+#easy-edit-panel select { max-width: 300px; padding: 4px 6px; background: var(--bg-color, #fff); color: inherit; border: 1px solid #7b899c66; border-radius: 5px; font: inherit; }
+#easy-edit-panel button { display: inline-block; min-height: 30px; margin: 0 0 0 8px; padding: 4px 11px; border: 1px solid #7b899c66; border-radius: 6px; background: var(--bg-color, #fff); color: inherit; font: inherit; cursor: pointer; }
+#easy-edit-panel button:focus-visible { outline: 2px solid #3979ce; outline-offset: 2px; }
+#easy-edit-panel button.ee-close { border: none; font-size: 25px; padding: 0 4px; }
+#easy-edit-panel button.ee-done { background: #3979ce; color: #fff; border-color: #3979ce; }
+#easy-edit-panel button:disabled, #easy-edit-panel input:disabled, #easy-edit-panel select:disabled { opacity: .45; cursor: default; }
+#easy-edit-panel .ee-footer { display: flex; align-items: center; padding: 12px 24px; border-top: 1px solid #7b899c33; }
+#easy-edit-panel .ee-status { flex: 1; font-size: 12px; opacity: .6; }
+#easy-edit-panel .ee-note { margin-top: 16px; }
+@media print { #easy-edit-panel { display: none !important; } }
+#write > .ee-fold-hidden { display: none; }
+#write > .ee-folded-heading::after, .ee-fold-widget { content: " … "; color: #5585c7; cursor: pointer; font: 14px/1.5 system-ui, sans-serif; }
+@media print { #write > .ee-fold-hidden { display: block !important; } #write > .ee-folded-heading::after { display: none; } }

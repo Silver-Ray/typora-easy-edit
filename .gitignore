@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.log
+.test-profile/
+theme-fixes/previews/
+*.bak
+*.easy-edit.backup
+*.disabled

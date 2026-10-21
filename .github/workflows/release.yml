@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to release, for example v1.2.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    name: Test and package the version tag
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ inputs.tag || github.ref_name }}
+
+  publish:
+    name: Publish verified GitHub Release
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - name: Download the tested package
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: installation-package
+          path: release-assets
+      - name: Validate tag, package version and checksum
+        working-directory: release-assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Expected a tag such as v1.2.0"; exit 1; }
+          version=$(jq -r '.version' release-info.json)
+          archive=$(jq -r '.archive' release-info.json)
+          [[ "$RELEASE_TAG" == "v$version" ]] || { echo "Tag and package.json version differ"; exit 1; }
+          [[ "$archive" == "typora-easy-edit-$version.zip" ]] || { echo "Unexpected package filename"; exit 1; }
+          sha256sum --check SHA256SUMS
+          expected=$(jq -r '.sha256' release-info.json)
+          actual=$(sha256sum "$archive" | cut -d ' ' -f 1)
+          [[ "$actual" == "$expected" ]] || { echo "Package digest differs from build metadata"; exit 1; }
+          echo "RELEASE_ARCHIVE=$archive" >> "$GITHUB_ENV"
+      - name: Create draft, upload assets and publish
+        working-directory: release-assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" "$RELEASE_ARCHIVE" SHA256SUMS \
+            --verify-tag --draft --title "Easy Edit $RELEASE_TAG" --notes-file release-notes.md
+          gh release edit "$RELEASE_TAG" --draft=false --latest

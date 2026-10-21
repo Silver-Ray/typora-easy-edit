@@ -1,0 +1,17 @@
+{
+  "name": "typora-easy-edit",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Typora 编辑增强：参考 Easy Typing 的 Edit Enhancements，所有功能独立开关",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/*.test.cjs",
+    "check": "node scripts/check.cjs",
+    "install:typora": "node scripts/install.cjs",
+    "uninstall:typora": "node scripts/install.cjs --uninstall",
+    "package": "node scripts/package.cjs",
+    "verify:package": "node scripts/verify-package.cjs"
+  },
+  "engines": { "node": ">=18" },
+  "devDependencies": { "jsdom": "^26.1.0", "codemirror": "^5.65.20" }
+}
